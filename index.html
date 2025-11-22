@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>Hoi Cloud</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-   <style>
+    <style>
         /* Reset và base styles */
         * {
             box-sizing: border-box;
@@ -18,6 +18,7 @@
             background: #fff; 
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             overflow: hidden;
+            touch-action: none;
         }
         
         #iframeContainer {
@@ -55,7 +56,7 @@
             pointer-events: none;
         }
 
-        /* Control Panel (Phần chung) */
+        /* Control Panel */
         #controlPanel {
             position: fixed;
             top: 10px;
@@ -71,9 +72,7 @@
             backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.3);
             transition: all 0.3s ease;
-            /* FIX 1: Đặt chiều rộng cố định và xóa max-width cũ */
-            width: 220px; 
-            max-width: none;
+            width: 220px;
         }
 
         #controlPanel.hidden {
@@ -140,7 +139,6 @@
             font-weight: 600;
             transition: all 0.3s ease;
             width: 100%;
-            min-width: 140px;
             touch-action: manipulation;
             font-family: inherit;
         }
@@ -170,7 +168,6 @@
 
         #zoomControls button {
             flex: 1;
-            /* Đã xóa min-width: 60px để các nút cân đối hơn trên width 220px */
             padding: 10px;
             font-size: 16px;
         }
@@ -297,12 +294,14 @@
             gap: 12px;
             justify-content: flex-end;
         }
+
         .watermark {
             position: fixed;
             bottom: 10px;
             right: 10px;
             color: #999;
             font-size: 12px;
+            z-index: 999;
         }
 
         .modal-button {
@@ -390,71 +389,10 @@
             box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
         }
 
-        /* Ẩn toàn bộ nội dung khi DevTools mở */
         .content-hidden {
             visibility: hidden !important;
             opacity: 0 !important;
             pointer-events: none !important;
-        }
-
-        /* Mobile specific styles */
-        @media (max-width: 768px) {
-            #controlPanel {
-                top: 8px;
-                left: 8px;
-                /* FIX 2: Bỏ right: 8px gây giãn màn hình */
-                right: auto;
-                /* FIX 3: Đảm bảo chiều rộng cố định */
-                width: 220px;
-                max-width: none;
-                padding: 14px;
-                gap: 10px;
-            }
-            
-            .control-label {
-                font-size: 12px;
-            }
-            
-            .control-button {
-                min-width: 120px;
-                padding: 10px 12px;
-                font-size: 12px;
-            }
-            
-            #zoomControls button {
-                min-width: 50px;
-                padding: 8px;
-                font-size: 14px;
-            }
-
-            .modal-content {
-                padding: 20px;
-                margin: 20px;
-            }
-            
-            #panelToggle {
-                width: 48px;
-                height: 48px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            #controlPanel {
-                padding: 12px;
-                max-width: none;
-                /* FIX 4: Thay width: calc(100vw - 16px) bằng chiều rộng cố định */
-                width: 220px;
-            }
-            
-            .control-button {
-                min-width: auto;
-                padding: 8px 10px;
-            }
-            
-            .modal-content {
-                padding: 16px;
-                margin: 16px;
-            }
         }
 
         /* Toast Notification */
@@ -516,12 +454,62 @@
             background-color: #f56565;
         }
 
-        /* Đảm bảo không có phần tử nào bị tràn ra ngoài */
         #mainContent {
             position: relative;
             width: 100%;
             height: 100%;
             overflow: hidden;
+        }
+
+        /* Mobile specific styles */
+        @media (max-width: 768px) {
+            #controlPanel {
+                top: 8px;
+                left: 8px;
+                width: 220px;
+                padding: 14px;
+                gap: 10px;
+            }
+            
+            .control-label {
+                font-size: 12px;
+            }
+            
+            .control-button {
+                padding: 10px 12px;
+                font-size: 12px;
+            }
+            
+            #zoomControls button {
+                padding: 8px;
+                font-size: 14px;
+            }
+
+            .modal-content {
+                padding: 20px;
+                margin: 20px;
+            }
+            
+            #panelToggle {
+                width: 48px;
+                height: 48px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            #controlPanel {
+                padding: 12px;
+                width: 220px;
+            }
+            
+            .control-button {
+                padding: 8px 10px;
+            }
+            
+            .modal-content {
+                padding: 16px;
+                margin: 16px;
+            }
         }
     </style>
 </head>
@@ -542,7 +530,6 @@
         </div>
 
         <div id="controlPanel">
-            
             <div class="control-group">
                 <div class="control-label">🔗 Copy Link</div>
                 <button id="copyUrlButton" class="control-button">
@@ -578,6 +565,13 @@
                 <div class="control-label">🔄 Reload</div>
                 <button id="reloadButton" class="control-button">
                     🔄 Reload Page
+                </button>
+            </div>
+
+            <div class="control-group">
+                <div class="control-label">🌐 Change URL</div>
+                <button id="changeUrlButton" class="control-button">
+                    📝 Change Website
                 </button>
             </div>
         </div>
@@ -668,6 +662,7 @@
                 controlPanel: document.getElementById('controlPanel'),
                 panelToggle: document.getElementById('panelToggle'),
                 reloadButton: document.getElementById('reloadButton'),
+                changeUrlButton: document.getElementById('changeUrlButton'),
                 urlModal: document.getElementById('urlModal'),
                 newUrlInput: document.getElementById('newUrlInput'),
                 devToolsWarning: document.getElementById('devToolsWarning'),
@@ -767,6 +762,13 @@
             state.isTouchDragging = false;
         }
 
+        function showUrlModal() {
+            if (elements.urlModal && elements.newUrlInput) {
+                elements.newUrlInput.value = state.currentUrl;
+                elements.urlModal.classList.add('active');
+            }
+        }
+
         function changeIframeUrl() {
             if (!elements.newUrlInput || !elements.hiddenFrame) return;
             
@@ -788,7 +790,7 @@
                 state.currentUrl = newUrl;
                 localStorage.setItem('customIframeUrl', newUrl);
                 
-                showToast(`✅ URL changed to: ${newUrl}`, 'info');
+                showToast(`✅ URL changed to: ${newUrl}`, 'success');
                 if (elements.urlModal) elements.urlModal.classList.remove('active');
                 
                 resetZoom();
@@ -812,7 +814,7 @@
                 setTimeout(() => {
                     elements.reloadButton.textContent = originalText;
                     elements.reloadButton.disabled = false;
-                    showToast('Page reloaded successfully!', 'info');
+                    showToast('Page reloaded successfully!', 'success');
                 }, 1000);
             }, 300);
         }
@@ -871,7 +873,7 @@
                 elements.copyButton.addEventListener('click', async () => {
                     try {
                         await navigator.clipboard.writeText(CONFIG.URLS.TOOL);
-                        showToast('✅ Link copied to clipboard!', 'info');
+                        showToast('✅ Link copied to clipboard!', 'success');
                         elements.copyButton.textContent = '✅ Copied!';
                         setTimeout(() => {
                             elements.copyButton.textContent = '📋 Copy Tool Link';
@@ -903,6 +905,11 @@
                 elements.reloadButton.addEventListener('click', reloadPage);
             }
 
+            // Change URL Button
+            if (elements.changeUrlButton) {
+                elements.changeUrlButton.addEventListener('click', showUrlModal);
+            }
+
             // Modal Controls (URL) 
             if (elements.closeModalBtn) {
                 elements.closeModalBtn.addEventListener('click', () => elements.urlModal.classList.remove('active'));
@@ -912,6 +919,15 @@
             }
             if (elements.confirmUrlBtn) {
                 elements.confirmUrlBtn.addEventListener('click', changeIframeUrl);
+            }
+
+            // Enter key in URL input
+            if (elements.newUrlInput) {
+                elements.newUrlInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        changeIframeUrl();
+                    }
+                });
             }
 
             // Panel Toggle Drag/Click Logic
@@ -934,6 +950,11 @@
                     if (state.hasDragged) {
                         state.panelTogglePosX += dx;
                         state.panelTogglePosY += dy;
+                        
+                        // Keep within viewport bounds
+                        state.panelTogglePosX = Math.max(0, Math.min(state.panelTogglePosX, window.innerWidth - elements.panelToggle.offsetWidth));
+                        state.panelTogglePosY = Math.max(0, Math.min(state.panelTogglePosY, window.innerHeight - elements.panelToggle.offsetHeight));
+                        
                         updatePanelTogglePosition();
                     }
                     
@@ -967,12 +988,12 @@
 
                     document.addEventListener('mousemove', onMove);
                     document.addEventListener('mouseup', onEnd);
-                    document.addEventListener('touchmove', onMove);
+                    document.addEventListener('touchmove', onMove, { passive: false });
                     document.addEventListener('touchend', onEnd);
                 }
 
                 elements.panelToggle.addEventListener('mousedown', onStart);
-                elements.panelToggle.addEventListener('touchstart', onStart);
+                elements.panelToggle.addEventListener('touchstart', onStart, { passive: false });
                 
                 updatePanelTogglePosition();
             }
@@ -1009,7 +1030,9 @@
             document.addEventListener('mouseup', (e) => {
                 if (state.isDragging) {
                     state.isDragging = false;
-                    elements.iframeContainer.classList.remove('is-dragging');
+                    if (elements.iframeContainer) {
+                        elements.iframeContainer.classList.remove('is-dragging');
+                    }
                 }
             });
             
@@ -1071,12 +1094,57 @@
                     state.touchZoomDistance = 0;
                 });
             }
+
+            // Keyboard shortcuts
+            document.addEventListener('keydown', (e) => {
+                // Ctrl/Cmd + Plus for zoom in
+                if ((e.ctrlKey || e.metaKey) && (e.key === '+' || e.key === '=')) {
+                    e.preventDefault();
+                    zoomIn();
+                }
+                // Ctrl/Cmd + Minus for zoom out
+                else if ((e.ctrlKey || e.metaKey) && e.key === '-') {
+                    e.preventDefault();
+                    zoomOut();
+                }
+                // Ctrl/Cmd + 0 for reset zoom
+                else if ((e.ctrlKey || e.metaKey) && e.key === '0') {
+                    e.preventDefault();
+                    resetZoom();
+                }
+                // Escape to close modal
+                else if (e.key === 'Escape' && elements.urlModal.classList.contains('active')) {
+                    elements.urlModal.classList.remove('active');
+                }
+            });
+
+            // Window resize handler
+            window.addEventListener('resize', () => {
+                applyTransform();
+                
+                // Keep panel toggle within bounds on resize
+                state.panelTogglePosX = Math.max(0, Math.min(state.panelTogglePosX, window.innerWidth - elements.panelToggle.offsetWidth));
+                state.panelTogglePosY = Math.max(0, Math.min(state.panelTogglePosY, window.innerHeight - elements.panelToggle.offsetHeight));
+                updatePanelTogglePosition();
+            });
+
+            // Load saved URL from localStorage
+            const savedUrl = localStorage.getItem('customIframeUrl');
+            if (savedUrl) {
+                state.currentUrl = savedUrl;
+                if (elements.hiddenFrame) {
+                    elements.hiddenFrame.src = savedUrl;
+                }
+            }
         }
         
         // =========================================================================
         // === INITIALIZATION ===
         // =========================================================================
-        window.onload = initializeEventListeners;
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeEventListeners();
+            applyTransform();
+        });
 
         // DevTools detection (basic check)
         const checkDevTools = () => {
@@ -1096,8 +1164,8 @@
             }
         };
 
-        // window.addEventListener('resize', checkDevTools);
+        // Check for DevTools periodically
+        setInterval(checkDevTools, 1000);
     </script>
 </body>
 </html>
-
