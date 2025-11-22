@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>Hoi Cloud</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <style>
+   <style>
         /* Reset và base styles */
         * {
             box-sizing: border-box;
@@ -55,7 +55,7 @@
             pointer-events: none;
         }
 
-        /* Control Panel */
+        /* Control Panel (Phần chung) */
         #controlPanel {
             position: fixed;
             top: 10px;
@@ -71,8 +71,8 @@
             backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.3);
             transition: all 0.3s ease;
-            /* FIX 1: Đặt chiều rộng cố định để tránh bị co lại quá mức */
-            width: 200px;
+            /* FIX 1: Đặt chiều rộng cố định và xóa max-width cũ */
+            width: 220px; 
             max-width: none;
         }
 
@@ -170,7 +170,7 @@
 
         #zoomControls button {
             flex: 1;
-            min-width: 60px;
+            /* Đã xóa min-width: 60px để các nút cân đối hơn trên width 220px */
             padding: 10px;
             font-size: 16px;
         }
@@ -402,9 +402,10 @@
             #controlPanel {
                 top: 8px;
                 left: 8px;
-                /* FIX 2: Xóa right: 8px để nó không giãn hết chiều ngang */
-                right: auto; 
-                width: 200px; /* Giữ chiều rộng cố định */
+                /* FIX 2: Bỏ right: 8px gây giãn màn hình */
+                right: auto;
+                /* FIX 3: Đảm bảo chiều rộng cố định */
+                width: 220px;
                 max-width: none;
                 padding: 14px;
                 gap: 10px;
@@ -441,8 +442,8 @@
             #controlPanel {
                 padding: 12px;
                 max-width: none;
-                /* FIX 3: Đảm bảo nó vẫn là chiều rộng cố định, không phải 100vw */
-                width: 200px; 
+                /* FIX 4: Thay width: calc(100vw - 16px) bằng chiều rộng cố định */
+                width: 220px;
             }
             
             .control-button {
@@ -1099,3 +1100,4 @@
     </script>
 </body>
 </html>
+
