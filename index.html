@@ -71,10 +71,9 @@
             backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.3);
             transition: all 0.3s ease;
-            
-            /* THIẾT LẬP CHUNG: 1/7 chiều dài browser */
-            max-width: none; 
-            width: calc(100vw / 7);
+            /* FIX 1: Đặt chiều rộng cố định để tránh bị co lại quá mức */
+            width: 200px;
+            max-width: none;
         }
 
         #controlPanel.hidden {
@@ -403,11 +402,10 @@
             #controlPanel {
                 top: 8px;
                 left: 8px;
-                
-                /* FIX: Đảm bảo width 1/7 được ưu tiên trên tablet */
+                /* FIX 2: Xóa right: 8px để nó không giãn hết chiều ngang */
+                right: auto; 
+                width: 200px; /* Giữ chiều rộng cố định */
                 max-width: none;
-                width: calc(100vw / 7) !important; 
-                
                 padding: 14px;
                 gap: 10px;
             }
@@ -442,10 +440,9 @@
         @media (max-width: 480px) {
             #controlPanel {
                 padding: 12px;
-                
-                /* FIX: Đảm bảo width 1/7 được ưu tiên trên mobile */
                 max-width: none;
-                width: calc(100vw / 7) !important;
+                /* FIX 3: Đảm bảo nó vẫn là chiều rộng cố định, không phải 100vw */
+                width: 200px; 
             }
             
             .control-button {
