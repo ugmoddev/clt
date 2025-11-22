@@ -71,6 +71,13 @@
             backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.3);
             width: 220px;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        #controlPanel.hidden {
+            transform: translateX(-100%);
+            opacity: 0;
+            pointer-events: none;
         }
 
         .control-group {
@@ -164,6 +171,34 @@
             z-index: 999;
         }
 
+        /* Toggle Panel Button */
+        #togglePanelBtn {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            z-index: 1001;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            opacity: 0.9;
+        }
+
+        #togglePanelBtn:hover {
+            transform: scale(1.1);
+            opacity: 1;
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
         /* Loading indicator */
         #loadingIndicator {
             position: fixed;
@@ -193,11 +228,19 @@
                 padding: 10px 12px;
                 font-size: 12px;
             }
+            
+            #togglePanelBtn {
+                width: 36px;
+                height: 36px;
+                font-size: 16px;
+            }
         }
     </style>
 </head>
 <body>
     <div id="loadingIndicator">Launching game...</div>
+
+    <button id="togglePanelBtn">☰</button>
 
     <div id="controlPanel">
         <div class="control-group">
@@ -274,7 +317,8 @@
             isTouchDragging: false,
             lastTouchX: 0,
             lastTouchY: 0,
-            touchZoomDistance: 0
+            touchZoomDistance: 0,
+            panelVisible: true
         };
 
         // DOM elements
@@ -289,7 +333,9 @@
             zoomInBtn: document.getElementById('zoomInBtn'),
             resetZoomBtn: document.getElementById('resetZoomBtn'),
             reloadButton: document.getElementById('reloadButton'),
-            loadingIndicator: document.getElementById('loadingIndicator')
+            loadingIndicator: document.getElementById('loadingIndicator'),
+            controlPanel: document.getElementById('controlPanel'),
+            togglePanelBtn: document.getElementById('togglePanelBtn')
         };
 
         // Core functionality
@@ -381,6 +427,18 @@
             }, 300);
         }
 
+        function togglePanel() {
+            state.panelVisible = !state.panelVisible;
+            
+            if (state.panelVisible) {
+                elements.controlPanel.classList.remove('hidden');
+                elements.togglePanelBtn.textContent = '☰';
+            } else {
+                elements.controlPanel.classList.add('hidden');
+                elements.togglePanelBtn.textContent = '☰';
+            }
+        }
+
         function showLoading() {
             elements.loadingIndicator.classList.add('active');
         }
@@ -417,6 +475,9 @@
 
             // Reload Button
             elements.reloadButton.addEventListener('click', reloadPage);
+
+            // Toggle Panel Button
+            elements.togglePanelBtn.addEventListener('click', togglePanel);
 
             // Iframe loading events
             elements.hiddenFrame.addEventListener('load', hideLoading);
