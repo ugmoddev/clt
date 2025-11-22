@@ -71,8 +71,11 @@
             backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.3);
             transition: all 0.3s ease;
-            max-width: 280px;
-            width: auto;
+            
+            /* === THAY ĐỔI THEO YÊU CẦU: 1/5 chiều dài browser (20vw) === */
+            max-width: none; 
+            width: 20vw; 
+            /* ========================================================== */
         }
 
         #controlPanel.hidden {
@@ -401,7 +404,8 @@
             #controlPanel {
                 top: 8px;
                 left: 8px;
-                right: 8px;
+                /* Cần loại bỏ right: 8px; và max-width: none; vì nó xung đột với width: 20vw */
+                width: 20vw; /* Vẫn giữ 20vw trên mobile nếu muốn */
                 max-width: none;
                 padding: 14px;
                 gap: 10px;
@@ -438,7 +442,7 @@
             #controlPanel {
                 padding: 12px;
                 max-width: none;
-                width: calc(100vw - 16px);
+                width: 20vw; /* Vẫn giữ 20vw trên mobile nhỏ hơn */
             }
             
             .control-button {
