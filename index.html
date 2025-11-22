@@ -72,9 +72,9 @@
             border: 1px solid rgba(255, 255, 255, 0.3);
             transition: all 0.3s ease;
             
-            /* === THAY ĐỔI THEO YÊU CẦU: 1/5 chiều dài browser (20vw) === */
+            /* === THAY ĐỔI THEO YÊU CẦU: 1/7 chiều dài browser (approx 14.28vw) === */
             max-width: none; 
-            width: 20vw; 
+            width: calc(100vw / 7); /* 1/7 of viewport width */
             /* ========================================================== */
         }
 
@@ -404,8 +404,8 @@
             #controlPanel {
                 top: 8px;
                 left: 8px;
-                /* Cần loại bỏ right: 8px; và max-width: none; vì nó xung đột với width: 20vw */
-                width: 20vw; /* Vẫn giữ 20vw trên mobile nếu muốn */
+                /* Cần loại bỏ right: 8px; và max-width: none; vì nó xung đột với width: 1/7 */
+                width: calc(100vw / 7); /* Vẫn giữ 1/7 trên mobile nếu muốn */
                 max-width: none;
                 padding: 14px;
                 gap: 10px;
@@ -442,7 +442,7 @@
             #controlPanel {
                 padding: 12px;
                 max-width: none;
-                width: 20vw; /* Vẫn giữ 20vw trên mobile nhỏ hơn */
+                width: calc(100vw / 7); /* Vẫn giữ 1/7 trên mobile nhỏ hơn */
             }
             
             .control-button {
