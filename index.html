@@ -55,7 +55,7 @@
             pointer-events: none;
         }
 
-        /* Control Panel - Simplified */
+        /* Control Panel - Clean & Simple */
         #controlPanel {
             position: fixed;
             top: 10px;
@@ -71,10 +71,6 @@
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.2);
             width: 200px;
-        }
-
-        #controlPanel.hidden {
-            display: none;
         }
 
         .control-group {
@@ -226,6 +222,13 @@
                 • Disable: Touch to use iframe
             </div>
         </div>
+
+        <div class="control-group">
+            <div class="control-label">🔄 Reload</div>
+            <button id="reloadButton" class="control-button">
+                Reload Page
+            </button>
+        </div>
     </div>
     
     <div id="iframeContainer">
@@ -263,8 +266,7 @@
             isTouchDragging: false,
             lastTouchX: 0,
             lastTouchY: 0,
-            touchZoomDistance: 0,
-            currentUrl: CONFIG.URLS.DEFAULT
+            touchZoomDistance: 0
         };
 
         // DOM elements
@@ -278,6 +280,7 @@
             zoomOutBtn: document.getElementById('zoomOutBtn'),
             zoomInBtn: document.getElementById('zoomInBtn'),
             resetZoomBtn: document.getElementById('resetZoomBtn'),
+            reloadButton: document.getElementById('reloadButton'),
             loadingIndicator: document.getElementById('loadingIndicator')
         };
 
@@ -352,6 +355,24 @@
             state.isTouchDragging = false;
         }
 
+        function reloadPage() {
+            const originalText = elements.reloadButton.textContent;
+            elements.reloadButton.textContent = 'Reloading...';
+            elements.reloadButton.disabled = true;
+            
+            const iframeSrc = elements.hiddenFrame.src;
+            elements.hiddenFrame.src = '';
+            
+            setTimeout(() => {
+                elements.hiddenFrame.src = iframeSrc;
+                
+                setTimeout(() => {
+                    elements.reloadButton.textContent = originalText;
+                    elements.reloadButton.disabled = false;
+                }, 1000);
+            }, 300);
+        }
+
         function showLoading() {
             elements.loadingIndicator.classList.add('active');
         }
@@ -385,6 +406,9 @@
 
             // Pan Toggle
             elements.panToggle.addEventListener('click', togglePanMode);
+
+            // Reload Button
+            elements.reloadButton.addEventListener('click', reloadPage);
 
             // Iframe loading events
             elements.hiddenFrame.addEventListener('load', hideLoading);
