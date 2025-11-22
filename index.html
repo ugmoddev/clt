@@ -72,10 +72,9 @@
             border: 1px solid rgba(255, 255, 255, 0.3);
             transition: all 0.3s ease;
             
-            /* === THAY ĐỔI THEO YÊU CẦU: 1/7 chiều dài browser (approx 14.28vw) === */
+            /* THIẾT LẬP CHUNG: 1/7 chiều dài browser */
             max-width: none; 
-            width: calc(100vw / 7); /* 1/7 of viewport width */
-            /* ========================================================== */
+            width: calc(100vw / 7);
         }
 
         #controlPanel.hidden {
@@ -404,9 +403,11 @@
             #controlPanel {
                 top: 8px;
                 left: 8px;
-                /* Cần loại bỏ right: 8px; và max-width: none; vì nó xung đột với width: 1/7 */
-                width: calc(100vw / 7); /* Vẫn giữ 1/7 trên mobile nếu muốn */
+                
+                /* FIX: Đảm bảo width 1/7 được ưu tiên trên tablet */
                 max-width: none;
+                width: calc(100vw / 7) !important; 
+                
                 padding: 14px;
                 gap: 10px;
             }
@@ -441,8 +442,10 @@
         @media (max-width: 480px) {
             #controlPanel {
                 padding: 12px;
+                
+                /* FIX: Đảm bảo width 1/7 được ưu tiên trên mobile */
                 max-width: none;
-                width: calc(100vw / 7); /* Vẫn giữ 1/7 trên mobile nhỏ hơn */
+                width: calc(100vw / 7) !important;
             }
             
             .control-button {
