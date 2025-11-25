@@ -218,6 +218,17 @@
             display: block;
         }
 
+        /* Copy & Reload buttons in one row */
+        .copy-reload-row {
+            display: flex;
+            gap: 8px;
+            width: 100%;
+        }
+
+        .copy-reload-row .control-button {
+            flex: 1;
+        }
+
         @media (max-width: 768px) {
             #controlPanel {
                 width: 200px;
@@ -243,11 +254,17 @@
     <button id="togglePanelBtn">☰</button>
 
     <div id="controlPanel">
+        <!-- Copy & Reload buttons side by side -->
         <div class="control-group">
-            <div class="control-label">🔗 Copy Link</div>
-            <button id="copyUrlButton" class="control-button">
-                📋 Copy Tool Link
-            </button>
+            <div class="control-label">🔗 Quick Actions</div>
+            <div class="copy-reload-row">
+                <button id="copyUrlButton" class="control-button">
+                    📋 Copy
+                </button>
+                <button id="reloadButton" class="control-button">
+                    🔄 Reload
+                </button>
+            </div>
         </div>
         
         <div class="control-group">
@@ -272,13 +289,6 @@
                 • Enable: Touch/Drag to move around<br>
                 • Disable: Touch to use iframe
             </div>
-        </div>
-
-        <div class="control-group">
-            <div class="control-label">🔄 Reload</div>
-            <button id="reloadButton" class="control-button">
-                🔄 Reload Page
-            </button>
         </div>
     </div>
     
@@ -421,7 +431,7 @@
                 elements.hiddenFrame.src = iframeSrc;
                 
                 setTimeout(() => {
-                    elements.reloadButton.textContent = originalText;
+                    elements.reloadButton.textContent = '🔄 Reload';
                     elements.reloadButton.disabled = false;
                 }, 1000);
             }, 300);
@@ -455,12 +465,12 @@
                     await navigator.clipboard.writeText(CONFIG.URLS.TOOL);
                     elements.copyButton.textContent = '✅ Copied!';
                     setTimeout(() => {
-                        elements.copyButton.textContent = '📋 Copy Tool Link';
+                        elements.copyButton.textContent = '📋 Copy';
                     }, 2000);
                 } catch (err) {
                     elements.copyButton.textContent = '❌ Failed';
                     setTimeout(() => {
-                        elements.copyButton.textContent = '📋 Copy Tool Link';
+                        elements.copyButton.textContent = '📋 Copy';
                     }, 2000);
                 }
             });
